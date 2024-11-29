@@ -1,5 +1,6 @@
 #define TESTING
 #include "train_gpt2.c"
+#include <time.h>
 
 // poor man's tensor checker
 int check_tensor(float *a, float *b, int n, const char* label) {
@@ -41,6 +42,37 @@ int main(int argc, char *argv[]) {
     // build the GPT-2 model from a checkpoint
     GPT2 model;
     gpt2_build_from_checkpoint(&model, "gpt2_124M.bin");
+
+    int B_ = 1;
+    int T_ = 1024;
+
+    int* x_ = (int*) malloc(B_ * T_ * sizeof(int));
+    int* y_ = (int*) malloc(B_ * T_ * sizeof(int));
+    for (int i = 0; i < T_; i++) {
+        x_[i] = y_[i] = i;
+    }
+
+    struct timespec start, end;
+    double elapsed;
+    
+
+    // 你要计时的代码
+    int rounds = 5;
+    double total_time = 0;
+    for (int i = 0; i < rounds; i++) {
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        printf("round %d\n", i);
+        gpt2_forward(&model, x_, y_, B_, T_);
+        clock_gettime(CLOCK_MONOTONIC, &end);
+        elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+        if (i > 0) {
+            total_time += elapsed;
+        }
+    }    
+
+    printf("avg time used: %f seconds\n", total_time / (rounds - 1));
+
+    return 0;
 
     int C = model.config.channels;
     int V = model.config.vocab_size;
