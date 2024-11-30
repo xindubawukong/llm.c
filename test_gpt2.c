@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 
     // build the GPT-2 model from a checkpoint
     GPT2 model;
-    gpt2_build_from_checkpoint(&model, "gpt2_124M.bin");
+    gpt2_build_from_checkpoint(&model, "gpt2_774M.bin");
 
     int B_ = 1;
     int T_ = 1024;
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     int* x_ = (int*) malloc(B_ * T_ * sizeof(int));
     int* y_ = (int*) malloc(B_ * T_ * sizeof(int));
     for (int i = 0; i < T_; i++) {
-        x_[i] = y_[i] = i;
+        x_[i] = y_[i] = rand() % 50257;
     }
 
     struct timespec start, end;
