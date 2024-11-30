@@ -56,8 +56,7 @@ int main(int argc, char *argv[]) {
     double elapsed;
     
 
-    // 你要计时的代码
-    int rounds = 5;
+    int rounds = 10;
     double total_time = 0;
     for (int i = 0; i < rounds; i++) {
         clock_gettime(CLOCK_MONOTONIC, &start);
